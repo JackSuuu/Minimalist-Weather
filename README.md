@@ -39,6 +39,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 currently in developing 🚧
 
-![show case](design/image.png)
+![show case](design/home.png)
 
 plan to integrate LLM to generate daily summary response
