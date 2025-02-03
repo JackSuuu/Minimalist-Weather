@@ -8,9 +8,10 @@ export default function Home() {
       <div className="absolute top-3 text-9xl font-bold text-white">Paris</div>
       <div className="absolute top-45 left-6 text-5xl font-bold text-white">Minimalist</div>
       <div className="absolute top-45 right-14 text-5xl font-bold text-white">Weather</div>
+      <div className="absolute bottom-5 text-2xl font-bold text-white font-serif">[This is a weather app]</div>
       {/* Phone Frame */}
       <div
-        className="relative w-[320px] h-[640px] rounded-[40px] p-6 flex flex-col gap-4 shadow-xl mt-8"
+        className="relative w-[320px] h-[660px] rounded-[40px] p-6 flex flex-col gap-4 shadow-xl mt-8 border-8 border-white"
         style={{ backgroundColor: yellow }}
       >
         {/* Header */}
@@ -26,24 +27,27 @@ export default function Home() {
           <div className="text-lg">Sunny</div>
           <div className="text-9xl font-bold text-black">31&deg;</div>
           <h3 className="self-start ml-3 font-bold">Daily Summary</h3>
+          {/* Plan to use ai to generate summary */}
           <p className="text-xs text-left mt-2 ml-3">
         Now it feels like 35&deg;, actually 31&deg;. It feels hot because of the direct sun. Today, the temperature is felt in the range from 31&deg; to 27&deg;.
           </p>
         </div>
         {/* Weather Stats */}
-        <div className="h-40 flex justify-between bg-black text-white p-3 rounded-lg text-sm">
+        <div className="h-40 flex justify-between bg-black text-white p-6 rounded-lg text-sm">
             <div className="flex flex-col items-center">
-            <Image src="/assets/wind.svg" alt="Wind Icon" className="w-6 h-6" width={24} height={24} />
+            <Image src="/wind.svg" alt="Wind Icon" className="w-6 h-6" width={24} height={24} />
             <span>4km/h</span>
             <span>Wind</span>
             </div>
           <div className="flex flex-col items-center">
-        <span>48%</span>
-        <span>Humidity</span>
+            <Image src="/water_drop.svg" alt="Wind Icon" className="w-6 h-6" width={24} height={24} />
+            <span>48%</span>
+            <span>Humidity</span>
           </div>
           <div className="flex flex-col items-center">
-        <span>1.6km</span>
-        <span>Visibility</span>
+            <Image src="/visibility.svg" alt="Wind Icon" className="w-6 h-6" width={24} height={24} />
+            <span>1.6km</span>
+            <span>Visibility</span>
           </div>
         </div>
         {/* Weekly Forecast */}
@@ -53,6 +57,13 @@ export default function Home() {
         {["21 Jan", "22 Jan", "23 Jan", "24 Jan"].map((date, idx) => (
             <div key={idx} className="flex flex-col items-center border-2 border-black px-2 py-1 rounded-lg">
             <span>{[26, 25, 27, 26][idx]}&deg;</span>
+            <Image
+              src={`/${["sunny", "partly_sunny", "rainy_light", "water_drop"][idx]}.svg`}
+              alt={["sunny", "partly_sunny", "rainy_light", "water_drop"][idx]}
+              width={24}
+              height={24}
+              className="w-6 h-6 brightness-0 mb-2"
+            />
             <span>{date}</span>
             </div>
         ))}
