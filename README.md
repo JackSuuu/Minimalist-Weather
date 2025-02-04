@@ -1,6 +1,6 @@
 # Minimalist-Weather
 
-currently in developing 🚧
+currently in development 🚧
 
 ![show case](design/image.png)
 
