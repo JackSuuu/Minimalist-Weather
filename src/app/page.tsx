@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import cities_json from "./cities.json";
 
+// will be useful when link color to the weather, for example sunny -> yellow
 const yellow = "#FEE143";
 
 interface HamburgerMenuProps {
@@ -103,26 +104,25 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-black p-6 font-[Iceberg]">
-      <div className="absolute top-3 text-9xl font-bold text-white">{CITY}</div>
+      <div className="md:text-7xl absolute top-3 text-9xl font-bold text-white">{CITY}</div>
       <div className="absolute top-45 left-6 text-5xl font-bold text-white">
         Minimalist
       </div>
       <div className="absolute top-45 right-14 text-5xl font-bold text-white">
         Weather
       </div>
-      <div className="absolute bottom-5 text-2xl font-bold text-white font-serif">
+      <div className="md:hidden absolute bottom-5 text-2xl font-bold text-white font-serif">
         [This is a weather app]
       </div>
       {/* Phone Frame with dynamic background colour animation */}
       <motion.div
-        initial={{
-          opacity: 0,
-          scale: 0.8,
-          backgroundImage: "linear-gradient(45deg, #FEE143, #FF5733)"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0, scale: 0.8 },
+          visible: { opacity: 1, scale: 1, transition: { duration: 1 } }
         }}
-        animate={{
-          opacity: 1,
-          scale: 1,
+        whileInView={{
           backgroundImage: [
         "linear-gradient(45deg, #FEE143, #FF5733)",
         "linear-gradient(45deg, #FF5733, #DAF7A6)",
@@ -159,26 +159,26 @@ export default function Home() {
           className="flex flex-col items-center justify-center flex-grow"
         >
           {loading ? (
-            <p className="text-white">Loading...</p>
+        <p className="text-white">Loading...</p>
           ) : weatherData ? (
-            <>
-              <div
-                style={{ backgroundColor: "black", borderRadius: "15px" }}
-                className="text-sm text-white px-4 py-1 mb-2"
-              >
-                {weatherData.date}
-              </div>
-              <div className="text-lg">{weatherData.condition}</div>
-              <div className="text-9xl font-bold text-black">
-                {weatherData.temperature}&deg;
-              </div>
-              <h3 className="self-start ml-3 font-bold">Daily Summary</h3>
-              <p className="text-xs text-left mt-2 ml-3">
-                {weatherData.summary}
-              </p>
-            </>
+        <>
+          <div
+            style={{ backgroundColor: "black", borderRadius: "15px" }}
+            className="text-sm text-white px-4 py-1 mb-2"
+          >
+            {weatherData.date}
+          </div>
+          <div className="text-lg">{weatherData.condition}</div>
+          <div className="text-9xl font-bold text-black">
+            {weatherData.temperature}&deg;
+          </div>
+          <h3 className="self-start ml-3 font-bold">Daily Summary</h3>
+          <p className="text-xs text-left mt-2 ml-3">
+            {weatherData.summary}
+          </p>
+        </>
           ) : (
-            <p className="text-white">Failed to load data</p>
+        <p className="text-white">Failed to load data</p>
           )}
         </motion.div>
         {/* Weather Stats */}
@@ -190,37 +190,37 @@ export default function Home() {
           className="h-40 flex justify-between bg-black/80 backdrop-blur-lg text-white p-6 rounded-lg text-sm"
         >
           <div className="flex flex-col items-center">
-            <Image
-              src="/wind.svg"
-              alt="Wind Icon"
-              className="w-6 h-6"
-              width={24}
-              height={24}
-            />
-            <span>4km/h</span>
-            <span>Wind</span>
+        <Image
+          src="/wind.svg"
+          alt="Wind Icon"
+          className="w-6 h-6"
+          width={24}
+          height={24}
+        />
+        <span>4km/h</span>
+        <span>Wind</span>
           </div>
           <div className="flex flex-col items-center">
-            <Image
-              src="/water_drop.svg"
-              alt="Humidity Icon"
-              className="w-6 h-6"
-              width={24}
-              height={24}
-            />
-            <span>48%</span>
-            <span>Humidity</span>
+        <Image
+          src="/water_drop.svg"
+          alt="Humidity Icon"
+          className="w-6 h-6"
+          width={24}
+          height={24}
+        />
+        <span>48%</span>
+        <span>Humidity</span>
           </div>
           <div className="flex flex-col items-center">
-            <Image
-              src="/visibility.svg"
-              alt="Visibility Icon"
-              className="w-6 h-6"
-              width={24}
-              height={24}
-            />
-            <span>1.6km</span>
-            <span>Visibility</span>
+        <Image
+          src="/visibility.svg"
+          alt="Visibility Icon"
+          className="w-6 h-6"
+          width={24}
+          height={24}
+        />
+        <span>1.6km</span>
+        <span>Visibility</span>
           </div>
         </motion.div>
         {/* Weekly Forecast */}
@@ -233,27 +233,27 @@ export default function Home() {
         >
           <div className="text-sm font-semibold">Weekly Forecast</div>
           <div className="flex justify-between mt-3 text-xs h-20">
-            {["21 Jan", "22 Jan", "23 Jan", "24 Jan"].map((date, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col items-center border-2 border-black px-2 py-1 rounded-lg"
-              >
-                <span>{[26, 25, 27, 26][idx]}&deg;</span>
-                <Image
-                  src={`/${[
-                    "sunny",
-                    "partly_sunny",
-                    "rainy_light",
-                    "water_drop",
-                  ][idx]}.svg`}
-                  alt={["sunny", "partly_sunny", "rainy_light", "water_drop"][idx]}
-                  width={24}
-                  height={24}
-                  className="w-6 h-6 brightness-0 mb-2"
-                />
-                <span>{date}</span>
-              </div>
-            ))}
+        {["21 Jan", "22 Jan", "23 Jan", "24 Jan"].map((date, idx) => (
+          <div
+            key={idx}
+            className="flex flex-col items-center border-2 border-black px-2 py-1 rounded-lg"
+          >
+            <span>{[26, 25, 27, 26][idx]}&deg;</span>
+            <Image
+          src={`/${[
+            "sunny",
+            "partly_sunny",
+            "rainy_light",
+            "water_drop",
+          ][idx]}.svg`}
+          alt={["sunny", "partly_sunny", "rainy_light", "water_drop"][idx]}
+          width={24}
+          height={24}
+          className="w-6 h-6 brightness-0 mb-2"
+            />
+            <span>{date}</span>
+          </div>
+        ))}
           </div>
         </motion.div>
       </motion.div>
