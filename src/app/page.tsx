@@ -212,7 +212,7 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="h-40 flex justify-between bg-black/80 backdrop-blur-lg text-white p-6 rounded-lg text-sm"
         >
-          <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center">
             <Image
               src="/wind.svg"
               alt="Wind Icon"
@@ -220,10 +220,10 @@ export default function Home() {
               width={24}
               height={24}
             />
-            <span>4km/h</span>
+            <span>{weatherData?.wind ? `${weatherData.wind} km/h` : 'N/A'}</span>
             <span>Wind</span>
-          </div>
-          <div className="flex flex-col items-center">
+            </div>
+            <div className="flex flex-col items-center">
             <Image
               src="/water_drop.svg"
               alt="Humidity Icon"
@@ -231,10 +231,10 @@ export default function Home() {
               width={24}
               height={24}
             />
-            <span>48%</span>
+            <span>{weatherData?.humidity ? `${weatherData.humidity}%` : 'N/A'}</span>
             <span>Humidity</span>
-          </div>
-          <div className="flex flex-col items-center">
+            </div>
+            <div className="flex flex-col items-center">
             <Image
               src="/visibility.svg"
               alt="Visibility Icon"
@@ -242,9 +242,9 @@ export default function Home() {
               width={24}
               height={24}
             />
-            <span>1.6km</span>
+            <span>{weatherData?.visibility ? `${weatherData.visibility} km` : 'N/A'}</span>
             <span>Visibility</span>
-          </div>
+            </div>
         </motion.div>
         <motion.div
           key={`forecast-${CITY}`}
