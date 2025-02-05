@@ -19,4 +19,3 @@ export async function GET(req) {
       return Response.json({ error: "Failed to fetch weather data" }, { status: 500 });
     }
   }
-  

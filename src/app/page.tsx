@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import cities_json from "./cities.json";
 
-// will be useful when link color to the weather, for example sunny -> yellow
 const yellow = "#FEE143";
 
 interface HamburgerMenuProps {
@@ -42,7 +41,7 @@ function HamburgerMenu({ onCitySelect }: HamburgerMenuProps) {
       </button>
       <div
         className={
-          "h-[450px] absolute mt-2 bg-white text-black rounded shadow-lg z-10 transform transition-all duration-300 " +
+          "no-scrollbar h-[450px] absolute mt-2 bg-white text-black rounded shadow-lg z-10 transform transition-all duration-300 overflow-y-auto " +
           (menuOpen
             ? "opacity-100 scale-100"
             : "opacity-0 scale-95 pointer-events-none")
@@ -75,12 +74,24 @@ function HamburgerMenu({ onCitySelect }: HamburgerMenuProps) {
           <div className="px-4 py-2 text-gray-500">No cities found</div>
         )}
       </div>
+      <style jsx>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }
 
 export default function Home() {
   const [weatherData, setWeatherData] = useState<any>(null);
+  const [weeklyForecast, setWeeklyForecast] = useState<
+    { date: string; averageTemperature: number; icon: string }[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [CITY, setCITY] = useState("London");
 
@@ -88,7 +99,7 @@ export default function Home() {
     const fetchWeather = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/proxy?city=${CITY}`);
+        const response = await fetch(`/api/weather/current?city=${CITY}`);
         const data = await response.json();
         console.log(data);
         setWeatherData(data);
@@ -100,6 +111,22 @@ export default function Home() {
     };
 
     fetchWeather();
+  }, [CITY]);
+
+  useEffect(() => {
+    const fetchForecast = async () => {
+      try {
+        const response = await fetch(`/api/weather/forecast?city=${CITY}&days=4`);
+        const data = await response.json();
+        // Assuming your API returns the forecast data under the "forecast" key
+        setWeeklyForecast(data.forecast);
+        console.log(data.forecast);
+      } catch (error) {
+        console.error("Error fetching forecast data:", error);
+      }
+    };
+
+    fetchForecast();
   }, [CITY]);
 
   return (
@@ -114,7 +141,6 @@ export default function Home() {
       <div className="md:hidden absolute bottom-5 text-2xl font-bold text-white font-serif">
         [This is a weather app]
       </div>
-      {/* Phone Frame with dynamic background colour animation */}
       <motion.div
         initial="hidden"
         animate="visible"
@@ -124,10 +150,10 @@ export default function Home() {
         }}
         whileInView={{
           backgroundImage: [
-        "linear-gradient(45deg, #FEE143, #FF5733)",
-        "linear-gradient(45deg, #FF5733, #DAF7A6)",
-        "linear-gradient(45deg, #DAF7A6, #FEE143)",
-        "linear-gradient(45deg, #FEE143, #FF5733)"
+            "linear-gradient(45deg, #FEE143, #FF5733)",
+            "linear-gradient(45deg, #FF5733, #DAF7A6)",
+            "linear-gradient(45deg, #DAF7A6, #FEE143)",
+            "linear-gradient(45deg, #FEE143, #FF5733)"
           ]
         }}
         transition={{
@@ -140,7 +166,6 @@ export default function Home() {
         <div className="absolute top-4 left-4">
           <HamburgerMenu onCitySelect={setCITY} />
         </div>
-        {/* Header with fade-in animation on city change */}
         <motion.div
           key={`header-${CITY}`}
           initial={{ opacity: 0, y: -10 }}
@@ -150,7 +175,6 @@ export default function Home() {
         >
           {CITY}
         </motion.div>
-        {/* Weather Information */}
         <motion.div
           key={`weather-${CITY}`}
           initial={{ opacity: 0, y: 10 }}
@@ -159,29 +183,28 @@ export default function Home() {
           className="flex flex-col items-center justify-center flex-grow"
         >
           {loading ? (
-        <p className="text-white">Loading...</p>
+            <p className="text-white">Loading...</p>
           ) : weatherData ? (
-        <>
-          <div
-            style={{ backgroundColor: "black", borderRadius: "15px" }}
-            className="text-sm text-white px-4 py-1 mb-2"
-          >
-            {weatherData.date}
-          </div>
-          <div className="text-lg">{weatherData.condition}</div>
-          <div className="text-9xl font-bold text-black">
-            {weatherData.temperature}&deg;
-          </div>
-          <h3 className="self-start ml-3 font-bold">Daily Summary</h3>
-          <p className="text-xs text-left mt-2 ml-3">
-            {weatherData.summary}
-          </p>
-        </>
+            <>
+              <div
+                style={{ backgroundColor: "black", borderRadius: "15px" }}
+                className="text-sm text-white px-4 py-1 mb-2"
+              >
+                {weatherData.date}
+              </div>
+              <div className="text-lg">{weatherData.condition}</div>
+              <div className="text-9xl font-bold text-black">
+                {weatherData.temperature}&deg;
+              </div>
+              <h3 className="self-start ml-3 font-bold">Daily Summary</h3>
+              <p className="text-xs text-left mt-2 ml-3">
+                {weatherData.summary}
+              </p>
+            </>
           ) : (
-        <p className="text-white">Failed to load data</p>
+            <p className="text-white">Failed to load data</p>
           )}
         </motion.div>
-        {/* Weather Stats */}
         <motion.div
           key={`stats-${CITY}`}
           initial={{ opacity: 0 }}
@@ -190,40 +213,39 @@ export default function Home() {
           className="h-40 flex justify-between bg-black/80 backdrop-blur-lg text-white p-6 rounded-lg text-sm"
         >
           <div className="flex flex-col items-center">
-        <Image
-          src="/wind.svg"
-          alt="Wind Icon"
-          className="w-6 h-6"
-          width={24}
-          height={24}
-        />
-        <span>4km/h</span>
-        <span>Wind</span>
+            <Image
+              src="/wind.svg"
+              alt="Wind Icon"
+              className="w-6 h-6"
+              width={24}
+              height={24}
+            />
+            <span>4km/h</span>
+            <span>Wind</span>
           </div>
           <div className="flex flex-col items-center">
-        <Image
-          src="/water_drop.svg"
-          alt="Humidity Icon"
-          className="w-6 h-6"
-          width={24}
-          height={24}
-        />
-        <span>48%</span>
-        <span>Humidity</span>
+            <Image
+              src="/water_drop.svg"
+              alt="Humidity Icon"
+              className="w-6 h-6"
+              width={24}
+              height={24}
+            />
+            <span>48%</span>
+            <span>Humidity</span>
           </div>
           <div className="flex flex-col items-center">
-        <Image
-          src="/visibility.svg"
-          alt="Visibility Icon"
-          className="w-6 h-6"
-          width={24}
-          height={24}
-        />
-        <span>1.6km</span>
-        <span>Visibility</span>
+            <Image
+              src="/visibility.svg"
+              alt="Visibility Icon"
+              className="w-6 h-6"
+              width={24}
+              height={24}
+            />
+            <span>1.6km</span>
+            <span>Visibility</span>
           </div>
         </motion.div>
-        {/* Weekly Forecast */}
         <motion.div
           key={`forecast-${CITY}`}
           initial={{ opacity: 0, y: 10 }}
@@ -232,29 +254,28 @@ export default function Home() {
           className="mt-2"
         >
           <div className="text-sm font-semibold">Weekly Forecast</div>
-          <div className="flex justify-between mt-3 text-xs h-20">
-        {["21 Jan", "22 Jan", "23 Jan", "24 Jan"].map((date, idx) => (
-          <div
-            key={idx}
-            className="flex flex-col items-center border-2 border-black px-2 py-1 rounded-lg"
-          >
-            <span>{[26, 25, 27, 26][idx]}&deg;</span>
-            <Image
-          src={`/${[
-            "sunny",
-            "partly_sunny",
-            "rainy_light",
-            "water_drop",
-          ][idx]}.svg`}
-          alt={["sunny", "partly_sunny", "rainy_light", "water_drop"][idx]}
-          width={24}
-          height={24}
-          className="w-6 h-6 brightness-0 mb-2"
-            />
-            <span>{date}</span>
-          </div>
-        ))}
-          </div>
+          {weeklyForecast.length > 0 ? (
+            <div className="flex justify-between mt-3 text-xs h-20">
+              {weeklyForecast.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex flex-col items-center border-2 border-black px-2 py-1 rounded-lg"
+                >
+                  <span className="text-black mb-1" >{item.averageTemperature}&deg;</span>
+                  <Image
+                    src={item.icon.startsWith("//") ? `https:${item.icon}` : item.icon}
+                    alt={item.icon}
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 brightness-0 mb-2"
+                  />
+                  <span>{item.date.slice(5)}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-xs text-white mt-2">Loading Forecast...</div>
+          )}
         </motion.div>
       </motion.div>
     </div>
